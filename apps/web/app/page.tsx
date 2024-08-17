@@ -1,11 +1,14 @@
-import { grandstander, zain, work_Sans } from "./fonts";
+import { Button } from "@/components/ui/button";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="">
-      <h1 className={work_Sans.className}>Teste</h1>
-      <h1 className={zain.className}>Teste</h1>
-      <h1 className={grandstander.className}>ecco</h1>
+    <main className="min-h-screen flex justify-center items-center">
+      <Card className="p-4 space-y-2">
+        <CardTitle>EM DESENVOLVIMENTO</CardTitle>
+        <CardDescription>Volte em Breve</CardDescription>
+      </Card>
     </main>
   );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { work_Sans } from "../public/fonts";
-import "./globals.css";
+import { work_Sans } from "../../public/fonts";
+import "@/app/globals.css";
 
 import { cn } from "@/lib/utils"
 
