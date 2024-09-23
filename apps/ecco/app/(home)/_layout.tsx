@@ -1,14 +1,31 @@
+import { Feather } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   return (
-    <Tabs>
-      <Tabs.Screen name="index" options={{
-        headerTransparent: true,
-        title: "Home",
-      }}
-
-      />
-    </Tabs>
+    <>
+      <StatusBar style="auto" />
+      <Tabs>
+        <Tabs.Screen name="history" options={{
+          headerTransparent: true,
+          title: "Orders",
+          tabBarIcon: () => <Feather name="clock" size={18} />
+        }}
+        />
+        <Tabs.Screen name="index" options={{
+          headerTransparent: true,
+          title: "Home",
+          tabBarIcon: () => <Feather name="home" size={18} />
+        }}
+        />
+        <Tabs.Screen name="profile" options={{
+          headerTransparent: true,
+          title: "Profile",
+          tabBarIcon: () => <Feather name="user" size={18} />
+        }}
+        />
+      </Tabs>
+    </>
   );
 }
