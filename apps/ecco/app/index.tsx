@@ -1,15 +1,53 @@
-import { Text, View, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { Text, View, TouchableOpacity, Alert } from "react-native";
+import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import * as Location from 'expo-location';
+import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Index() {
   const [step, setStep] = useState(0);
   const router = useRouter();
+  const [locationGranted, setLocationGranted] = useState(false);
+  const [notificationGranted, setNotificationGranted] = useState(false);
 
-  const handleNext = () => {
-    if (step < 2) setStep(step + 1);
-    else router.push("/(home)"); // Redireciona para a rota (home)
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      const onboardingCompleted = await AsyncStorage.getItem('onboardingCompleted');
+      if (onboardingCompleted) {
+        router.replace("/(home)"); // Redireciona para /home se o onboarding já foi concluído
+      }
+    };
+
+    checkOnboarding();
+  }, []);
+
+  const handleNext = async () => {
+    if (step === 1) {
+      // Solicitar permissão de localização
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status === 'granted') {
+        setLocationGranted(true);
+        setStep(step + 1);
+      } else {
+        Alert.alert('Permissão de Localização', 'É necessário permitir o acesso à sua localização.');
+      }
+    } else if (step === 2) {
+      // Solicitar permissão de notificações
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status === 'granted') {
+        setNotificationGranted(true);
+        // Salvar estado de conclusão do onboarding
+        await AsyncStorage.setItem('onboardingCompleted', 'true');
+        // Redirecionar para a página inicial após a aprovação
+        router.replace("/(home)"); // Usando replace aqui
+      } else {
+        Alert.alert('Permissão de Notificações', 'É necessário permitir o envio de notificações.');
+      }
+    } else {
+      setStep(step + 1);
+    }
   };
 
   const handlePrev = () => {
@@ -26,15 +64,21 @@ export default function Index() {
 
         {/* Texto no centro */}
         <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 20 }}>
-          <Text style={{ textAlign: "center", fontSize: 16, lineHeight: 24 }}>
-            Descubra produtos incríveis com descontos de até 60% nas lojas parceiras.
-          </Text>
-          <Text style={{ textAlign: "center", fontSize: 16, lineHeight: 24, marginTop: 16 }}>
-            Compre sacolas surpresa com itens selecionados especialmente para você e apoie a sustentabilidade.
-          </Text>
-          <Text style={{ textAlign: "center", fontSize: 16, lineHeight: 24, marginTop: 16 }}>
-            Vamos te mostrar como funciona!
-          </Text>
+          {step === 0 && (
+            <Text style={{ textAlign: "center", fontSize: 16, lineHeight: 24 }}>
+              Descubra produtos incríveis com descontos de até 60% nas lojas parceiras.
+            </Text>
+          )}
+          {step === 1 && (
+            <Text style={{ textAlign: "center", fontSize: 16, lineHeight: 24 }}>
+              Precisamos da sua localização para personalizar sua experiência.
+            </Text>
+          )}
+          {step === 2 && (
+            <Text style={{ textAlign: "center", fontSize: 16, lineHeight: 24 }}>
+              Precisamos da sua autorização para enviar notificações.
+            </Text>
+          )}
         </View>
       </View>
     );

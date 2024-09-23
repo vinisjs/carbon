@@ -6,13 +6,27 @@ export default function RootLayout() {
     <>
       <StatusBar style="auto" />
       <Stack>
-        <Stack.Screen name="index" options={
-          {
-            headerShown: false
+        <Stack.Screen name="index"
+          options={
+            {
+              headerShown: false
+            }
+          } />
+        <Stack.Screen name="(home)"
+          options={
+            {
+              headerShown: false
+            }
           }
-        } />
-        <Stack.Screen name="(home)" />
-        <Stack.Screen name="(admin)" />
+
+        />
+        <Stack.Screen name="(admin)"
+          options={
+            {
+              headerShown: false
+            }
+          }
+        />
       </Stack>
     </>
   );
